@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "973084844515",
+    "project_id": "snow-chat-f33a4",
+    "storage_bucket": "snow-chat-f33a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973084844515:android:0b92758fd2f09d2d3cc0d6",
+        "android_client_info": {
+          "package_name": "com.example.snow_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973084844515-gvpai5ujuket1np73m6ano5re72q1mno.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.snow_chat",
+            "certificate_hash": "0388d0f4b7574f6212a4e17aa154c36bddc90cf0"
+          }
+        },
+        {
+          "client_id": "973084844515-ulsc7ev98a9sd9tc23n71o9iqgvpekpi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_DGntsB1oXBUYbP5-QLbsxe2wv4-OxhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973084844515-ulsc7ev98a9sd9tc23n71o9iqgvpekpi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
