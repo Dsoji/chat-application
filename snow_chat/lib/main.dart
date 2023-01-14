@@ -1,10 +1,18 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:snow_chat/splash_screen.dart';
 
-void main() {
+import 'package:get/get.dart';
+import 'package:snow_chat/common/routes/pages.dart';
+
+import 'firebase_options.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     runApp(const MyApp());
@@ -23,12 +31,14 @@ class MyApp extends StatelessWidget {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {
-          return MaterialApp(
+          return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Chat app',
             theme:
                 ThemeData(primaryColor: const Color.fromRGBO(88, 110, 158, 1)),
-            home: const SplashScreen(),
+            initialRoute: AppPages.INITIAL,
+            getPages: AppPages.routes,
+            // home: const SplashScreen(),
           );
         });
   }
