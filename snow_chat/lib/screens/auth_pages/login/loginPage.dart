@@ -2,7 +2,9 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:snow_chat/constants/constants.dart';
+import 'package:snow_chat/screens/auth_pages/login/google_login.dart';
 import 'package:snow_chat/screens/auth_pages/reset_password.dart';
 import 'package:snow_chat/widgets/reusable_button.dart';
 
@@ -44,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(children: [
                 Container(
                   width: 200,
-                  height: 200,
+                  height: 170,
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                       shape: BoxShape.circle, color: Colors.blueGrey.shade50),
@@ -69,9 +71,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(
                   height: 20,
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
                 const Padding(
                   padding: EdgeInsets.all(8.0),
@@ -169,6 +168,34 @@ class _LoginPageState extends State<LoginPage> {
                   color: mOnboardingColor1,
                   text: "Next",
                   onPressed: logIn,
+                ),
+                GestureDetector(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Container(
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 40,
+                              width: 40,
+                              // elevation: 1,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: Image.asset('assets/google.png'),
+                            ),
+                            const Text("Click To Sign In To Google")
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    final provider = Provider.of<GoogleLoginProvider>(context,
+                        listen: false);
+                    provider.googleLogin();
+                  },
                 )
               ]),
             ),

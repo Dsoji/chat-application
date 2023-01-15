@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:snow_chat/common/routes/pages.dart';
+import 'package:snow_chat/screens/auth_pages/login/google_login.dart';
 
 import 'firebase_options.dart';
 
@@ -24,22 +26,22 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    // ignore: prefer_const_constructors
-    return ScreenUtilInit(
-        designSize: const Size(375, 812),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) {
-          return GetMaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Chat app',
-            theme:
-                ThemeData(primaryColor: const Color.fromRGBO(88, 110, 158, 1)),
-            initialRoute: AppPages.INITIAL,
-            getPages: AppPages.routes,
-            // home: const SplashScreen(),
-          );
-        });
-  }
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+        create: (context) => GoogleLoginProvider(),
+        child: ScreenUtilInit(
+            designSize: const Size(375, 812),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (context, child) {
+              return GetMaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Chat app',
+                theme: ThemeData(
+                    primaryColor: const Color.fromRGBO(88, 110, 158, 1)),
+                initialRoute: AppPages.INITIAL,
+                getPages: AppPages.routes,
+                // home: const SplashScreen(),
+              );
+            }),
+      );
 }

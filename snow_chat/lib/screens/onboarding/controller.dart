@@ -7,6 +7,7 @@ class OnboardingController extends GetxController {
   OnboardingController();
 
   handleSignIn() {
+    //await ConfigStore.to.saveAlreadyOpen();
     Get.offAndToNamed(AppRoutes.SIGN_IN);
   }
 }
