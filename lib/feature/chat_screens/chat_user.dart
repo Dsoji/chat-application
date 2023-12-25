@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:ice_chat/core/constants/colors.dart';
+import 'package:ice_chat/feature/auth_screen/login_screen.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatScreen extends StatefulWidget {
   static route() => MaterialPageRoute(
@@ -193,4 +196,22 @@ class _ChatScreenState extends State<ChatScreen> {
   //     return const SizedBox();
   //   }
   // }
+
+  Future<void> logout(BuildContext context) async {
+    const CircularProgressIndicator();
+    await FirebaseAuth.instance.signOut();
+    // Clear the user details using the userDetails['userRole']Provider's clearUserDetails method.
+    // Provider.of<userDetails['userRole']Provider>(context, listen: false).clearUserDetails();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('userName');
+
+    prefs.remove('userEmail');
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginScreen(),
+      ),
+    );
+  }
 }

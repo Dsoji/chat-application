@@ -5,11 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ice_chat/core/constants/colors.dart';
-import 'package:ice_chat/core/constants/reusable_buttons.dart';
+import 'package:ice_chat/core/widgets/reusable_buttons.dart';
 import 'package:ice_chat/core/widgets/error_widget.dart';
 import 'package:ice_chat/feature/auth_screen/register_screen.dart';
 import 'package:ice_chat/feature/auth_screen/resetPswrd_screen.dart';
 import 'package:ice_chat/feature/chat_screens/chat_user.dart';
+import 'package:ice_chat/services/firebaseAuth_service.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -22,11 +24,20 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   bool visible = false;
 
   @override
   Widget build(BuildContext context) {
+    final loginprovideRef = ref.watch(firebaseAuthprovideService);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -170,19 +181,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const SizedBox(
                         height: 16,
                       ),
-                      ColorButton(
-                        width: 300,
-                        color: mOnboardingColor1,
-                        text: "Login",
-                        onPressed: () {
-                          setState(() {
-                            visible = true;
-                          });
-                          signIn(
-                              _emailController.text, _passwordController.text);
-                        },
-                        textColor: Colors.white,
-                      ),
+                      isLoading
+                          ? LoadingAnimationWidget.staggeredDotsWave(
+                              color: mOnboardingColor1, size: 25)
+                          : ColorButton(
+                              width: 300,
+                              color: mOnboardingColor1,
+                              text: "Next",
+                              textColor: Colors.white,
+                              onPressed: () async {
+                                if (_emailController.text.isNotEmpty) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+
+                                  await loginprovideRef.signIn(
+                                    context,
+                                    _emailController.text,
+                                    _passwordController.text,
+                                  );
+
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                }
+                              },
+                            ),
+
                       // GestureDetector(
                       //   child: Padding(
                       //     padding: const EdgeInsets.all(8.0),

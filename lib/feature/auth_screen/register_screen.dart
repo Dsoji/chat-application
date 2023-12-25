@@ -3,20 +3,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:ice_chat/core/constants/colors.dart';
-import 'package:ice_chat/core/constants/reusable_buttons.dart';
+import 'package:ice_chat/core/widgets/reusable_buttons.dart';
 import 'package:ice_chat/core/widgets/error_widget.dart';
 import 'package:ice_chat/feature/auth_screen/login_screen.dart';
+import 'package:ice_chat/services/firebaseAuth_service.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _auth = FirebaseAuth.instance;
   bool showProgress = false;
 
@@ -24,6 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
   final _confirmpasswordController = TextEditingController();
   final _usernameController = TextEditingController();
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -33,25 +37,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  Future signUp() async {
-    if (passwordConfirmed()) {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
-    }
-  }
-
-  bool passwordConfirmed() {
-    if (_passwordController.text.trim() ==
-        _confirmpasswordController.text.trim()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final registerprovideRef = ref.watch(firebaseAuthprovideService);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -207,56 +195,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(
                   height: 16,
                 ),
+                isLoading
+                    ? LoadingAnimationWidget.staggeredDotsWave(
+                        color: mOnboardingColor1, size: 25)
+                    : ColorButton(
+                        width: 300,
+                        color: mOnboardingColor1,
+                        text: "Next",
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          if (_emailController.text.isNotEmpty) {
+                            setState(() {
+                              isLoading = true;
+                            });
 
-                ColorButton(
-                  width: 300,
-                  color: mOnboardingColor1,
-                  text: "Register",
-                  onPressed: () {
-                    setState(() {
-                      showProgress = true;
-                    });
-                    signinUp(_emailController.text, _passwordController.text,
-                        _usernameController.text);
-                  },
-                  textColor: Colors.white,
-                )
+                            await registerprovideRef.signinUp(
+                                context,
+                                _emailController.text,
+                                _passwordController.text,
+                                _usernameController.text);
+
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        },
+                      ),
               ]),
             ),
           ),
         ),
       ),
     );
-  }
-
-  void signinUp(String email, String password, String name) async {
-    showDialog(
-      context: context,
-      builder: (context) => const Center(
-        child: const CircularProgressIndicator(
-          color: Colors.blue,
-        ),
-      ),
-    );
-
-    try {
-      Set userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => {postDetailsToFirestore(email, name)});
-    } on FirebaseAuthException catch (e) {
-      displayMessage(e.code, context);
-    }
-  }
-
-  postDetailsToFirestore(String email, String name) async {
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    var user = _auth.currentUser;
-    CollectionReference ref = FirebaseFirestore.instance.collection('users');
-    ref.doc(user!.uid).set({
-      'email': _emailController.text,
-      'name': _usernameController.text,
-    });
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 }

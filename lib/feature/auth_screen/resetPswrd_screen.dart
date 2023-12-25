@@ -2,29 +2,35 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:ice_chat/core/constants/colors.dart';
-import 'package:ice_chat/core/constants/reusable_buttons.dart';
+import 'package:ice_chat/core/widgets/reusable_buttons.dart';
 import 'package:ice_chat/core/widgets/error_widget.dart';
+import 'package:ice_chat/services/firebaseAuth_service.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class ResetScreen extends StatefulWidget {
+class ResetScreen extends ConsumerStatefulWidget {
   const ResetScreen({super.key});
 
   @override
-  State<ResetScreen> createState() => _ResetScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ResetScreenState();
 }
 
-class _ResetScreenState extends State<ResetScreen> {
+class _ResetScreenState extends ConsumerState<ResetScreen> {
+  //
   final _emailController = TextEditingController();
-
   @override
   void dispose() {
     _emailController.dispose();
     super.dispose();
   }
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
+    final resetPswrdprovideRef = ref.watch(firebaseAuthprovideService);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -49,38 +55,56 @@ class _ResetScreenState extends State<ResetScreen> {
           child: Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(children: [
-                const Gap(24),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.circular(12),
+              child: Column(
+                children: [
+                  const Gap(24),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.blueGrey),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        hintText: "Email",
+                        fillColor: Colors.grey[200],
+                        filled: true,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.blueGrey),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      hintText: "Email",
-                      fillColor: Colors.grey[200],
-                      filled: true,
                     ),
                   ),
-                ),
-                const Gap(
-                  16,
-                ),
-                ColorButton(
-                  width: 300,
-                  color: mOnboardingColor1,
-                  text: "Next",
-                  textColor: Colors.white,
-                  onPressed: rstPswrd,
-                )
-              ]),
+                  const Gap(
+                    16,
+                  ),
+                  isLoading
+                      ? LoadingAnimationWidget.staggeredDotsWave(
+                          color: mOnboardingColor1, size: 25)
+                      : ColorButton(
+                          width: 300,
+                          color: mOnboardingColor1,
+                          text: "Next",
+                          textColor: Colors.white,
+                          onPressed: () async {
+                            if (_emailController.text.isNotEmpty) {
+                              setState(() {
+                                isLoading = true;
+                              });
+
+                              await resetPswrdprovideRef.resetPassword(
+                                  context, _emailController.text);
+
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          },
+                        ),
+                ],
+              ),
             ),
           ),
         ),
