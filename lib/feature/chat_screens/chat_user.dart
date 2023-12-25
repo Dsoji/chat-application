@@ -31,16 +31,12 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        leading: BackButton(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white
-              : Colors.black, // <-- SEE HERE
-        ),
+        automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Here are your chats',
+          'Welcome, here are your chats',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -81,7 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide.none,
                           ),
-                          hintText: 'Search Direct Messages',
+                          hintText: 'Search for users',
                           hintStyle: const TextStyle(
                             color: Colors.black,
                           ),

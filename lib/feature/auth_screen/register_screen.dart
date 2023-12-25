@@ -1,10 +1,12 @@
 // ignore_for_file: file_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/core/constants/reusable_buttons.dart';
+import 'package:ice_chat/core/widgets/error_widget.dart';
 import 'package:ice_chat/feature/auth_screen/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -15,9 +17,13 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final _auth = FirebaseAuth.instance;
+  bool showProgress = false;
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmpasswordController = TextEditingController();
+  final _usernameController = TextEditingController();
 
   @override
   void dispose() {
@@ -94,7 +100,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.blueGrey),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      hintText: "Username",
+                      fillColor: Colors.grey[200],
+                      filled: true,
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
@@ -188,7 +212,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   width: 300,
                   color: mOnboardingColor1,
                   text: "Register",
-                  onPressed: signUp,
+                  onPressed: () {
+                    setState(() {
+                      showProgress = true;
+                    });
+                    signinUp(_emailController.text, _passwordController.text,
+                        _usernameController.text);
+                  },
                   textColor: Colors.white,
                 )
               ]),
@@ -197,5 +227,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+  }
+
+  void signinUp(String email, String password, String name) async {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: const CircularProgressIndicator(
+          color: Colors.blue,
+        ),
+      ),
+    );
+
+    try {
+      Set userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) => {postDetailsToFirestore(email, name)});
+    } on FirebaseAuthException catch (e) {
+      displayMessage(e.code, context);
+    }
+  }
+
+  postDetailsToFirestore(String email, String name) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    var user = _auth.currentUser;
+    CollectionReference ref = FirebaseFirestore.instance.collection('users');
+    ref.doc(user!.uid).set({
+      'email': _emailController.text,
+      'name': _usernameController.text,
+    });
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 }
