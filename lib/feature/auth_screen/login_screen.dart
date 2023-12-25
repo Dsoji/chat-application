@@ -22,21 +22,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _auth = FirebaseAuth.instance;
+
   bool visible = false;
-
-  // Future logIn() async {
-  //   await FirebaseAuth.instance.signInWithEmailAndPassword(
-  //       email: _emailController.text.trim(),
-  //       password: _passwordController.text.trim());
-  // }
-
-  // @override
-  // void dispose() {
-  //   _emailController.dispose();
-  //   _passwordController.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {

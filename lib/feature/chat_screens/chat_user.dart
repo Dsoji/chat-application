@@ -31,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        automaticallyImplyLeading: true,
+        // automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,

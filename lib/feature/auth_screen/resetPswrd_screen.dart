@@ -1,10 +1,11 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/core/constants/reusable_buttons.dart';
+import 'package:ice_chat/core/widgets/error_widget.dart';
 
 class ResetScreen extends StatefulWidget {
   const ResetScreen({super.key});
@@ -15,32 +16,11 @@ class ResetScreen extends StatefulWidget {
 
 class _ResetScreenState extends State<ResetScreen> {
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmpasswordController = TextEditingController();
 
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
-    _confirmpasswordController.dispose();
     super.dispose();
-  }
-
-  Future signUp() async {
-    if (passwordConfirmed()) {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
-    }
-  }
-
-  bool passwordConfirmed() {
-    if (_passwordController.text.trim() ==
-        _confirmpasswordController.text.trim()) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   @override
@@ -98,7 +78,7 @@ class _ResetScreenState extends State<ResetScreen> {
                   color: mOnboardingColor1,
                   text: "Next",
                   textColor: Colors.white,
-                  onPressed: () {},
+                  onPressed: rstPswrd,
                 )
               ]),
             ),
@@ -106,5 +86,30 @@ class _ResetScreenState extends State<ResetScreen> {
         ),
       ),
     );
+  }
+
+  Future rstPswrd() async {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: const CircularProgressIndicator(
+          color: Colors.blue,
+        ),
+      ),
+    );
+
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: _emailController.text);
+      // displayMessage(
+      //     "Password reset email sent successfully!, check your mail", context);
+      // ignore: use_build_context_synchronously
+      displayMessage(
+          "Password reset email sent successfully!, check your mail", context);
+    } on FirebaseAuthException catch (e) {
+      // Handle errors if the password reset email cannot be sent
+      print('Error sending password reset email: $e');
+      displayMessage("Reset link not sent, please try again", context);
+    }
   }
 }
