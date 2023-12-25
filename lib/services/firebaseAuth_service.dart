@@ -119,7 +119,6 @@ class FirebaseAuthprovideServiceService {
   }
 
 //logout
-  //to logout
   Future<void> logout(BuildContext context) async {
     const CircularProgressIndicator();
     await FirebaseAuth.instance.signOut();

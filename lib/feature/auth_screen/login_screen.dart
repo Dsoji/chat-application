@@ -6,13 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/core/widgets/reusable_buttons.dart';
-import 'package:ice_chat/core/widgets/error_widget.dart';
+
 import 'package:ice_chat/feature/auth_screen/register_screen.dart';
 import 'package:ice_chat/feature/auth_screen/resetPswrd_screen.dart';
-import 'package:ice_chat/feature/chat_screens/chat_user.dart';
+
 import 'package:ice_chat/services/firebaseAuth_service.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -243,61 +242,5 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
       ),
     );
-  }
-
-  void route() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    var userDocRef =
-        FirebaseFirestore.instance.collection('users').doc(user!.uid);
-    var kk = FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) async {
-      if (documentSnapshot.exists) {
-        if (documentSnapshot.exists) {
-          String userName = documentSnapshot.get('name');
-          String userEmail = documentSnapshot.get('email');
-
-          // Store user information in SharedPreferences
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('userName', userName);
-          prefs.setString('userEmail', userEmail);
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const ChatScreen()),
-          );
-        } else {}
-      }
-    });
-  }
-
-  void signIn(String email, String password) async {
-    showDialog(
-      context: context,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(
-          color: Colors.blue,
-        ),
-      ),
-    );
-
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      route();
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        displayMessage("User not found", context);
-      } else if (e.code == 'wrong-password') {
-        displayMessage("Error: check details and try again", context);
-      } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        displayMessage('Wrong login credentials, please try again', context);
-      }
-    }
   }
 }
