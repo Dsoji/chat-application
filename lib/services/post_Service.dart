@@ -1,33 +1,106 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ice_chat/feature/feeds/model/post_model.dart';
+import 'dart:io';
 
-class PostService {
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:ice_chat/feature/chat_screens/model/chat_model.dart';
+import 'package:ice_chat/feature/feeds/model/post_model.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// import 'package:ice_chat/feature/feeds/model/post_model.dart';
+class PostService extends ChangeNotifier {
+  // Get instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> addPostWithImage(String content, String imageUrl) async {
-    final postsCollection = _firestore.collection('posts');
-    final timestamp = DateTime.now();
+  final ImagePicker _imagePicker = ImagePicker();
 
-    await postsCollection.add({
-      'content': content,
-      'timestamp': timestamp,
-      'image_url': imageUrl,
-    });
+  // Existing methods...
+
+  Future<XFile?> pickImage() async {
+    try {
+      final pickedFile = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+      );
+      return pickedFile;
+    } catch (e) {
+      print('Error picking image: $e');
+      return null;
+    }
   }
 
-  Stream<List<Post>> getPosts() {
-    final postsCollection = _firestore.collection('posts');
+  // Send message
+  Future<void> makePosts(
+    String userId,
+    String message,
+    XFile? image,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userDocId') ?? '';
+    String username = prefs.getString('userName') ?? '';
 
-    return postsCollection.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return Post.fromMap(data);
-      }).toList();
-    });
+    // Get current user info
+    final String currentUserId = userId;
+    final String currentUserName = username;
+    final Timestamp timestamp = Timestamp.now();
+
+    // Upload image if present and get URL
+    String imageUrl = '';
+    if (image != null) {
+      imageUrl = await uploadImageToFirebaseStorage(image);
+    }
+
+    // Create a new message
+    Posts newMsg = Posts(
+      senderId: currentUserId,
+      senderUsername: currentUserName,
+      message: message,
+      timestamp: timestamp,
+      imageUrl: imageUrl,
+    );
+
+    // Construct chat room id
+    List<String> ids = [currentUserId];
+    ids.sort();
+    // String chatRoomId = ids.join("_");
+
+    // Add new message to Firestore
+    await _firestore.collection("posts").add(newMsg.toMap());
   }
 
-  Future<void> deletePost(String postId) async {
-    final postReference = _firestore.collection('posts').doc(postId);
-    await postReference.delete();
+  // Get messages
+  Stream<QuerySnapshot> getPosts() {
+    // Construct chat room id
+
+    // String chatRoomId = ids.join("_");
+
+    return _firestore
+        .collection("posts")
+        .orderBy('timestamp', descending: true)
+        .snapshots();
+  }
+
+  // Upload image to Firebase Storage and return download URL
+  Future<String> uploadImageToFirebaseStorage(XFile image) async {
+    final storage = FirebaseStorage.instance;
+    final storageRef = storage.ref('post_images').child(image.path);
+
+    await storageRef.putFile(File(image.path));
+    final downloadUrl = await storageRef.getDownloadURL();
+
+    return downloadUrl;
+  }
+
+  //get only last message of a specific chat
+  Stream<QuerySnapshot<Map<String, dynamic>>> getLastPost(
+      String userId, String otherUserId) {
+    List<String> ids = [userId, otherUserId];
+    ids.sort();
+    // String chatRoomId = ids.join("_");
+
+    return _firestore
+        .collection("posts")
+        .orderBy('timestamp', descending: true)
+        .snapshots();
   }
 }

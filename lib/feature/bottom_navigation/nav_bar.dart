@@ -16,7 +16,7 @@ class NaviBar extends StatefulWidget {
 
 class _NaviBarState extends State<NaviBar> {
   late List<Widget> pageList = [
-    const FeedsPage(),
+    FeedsPage(),
     const ChatScreen(),
     const SettingPage(),
   ];
