@@ -1,20 +1,28 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ice_chat/feature/chat_screens/chat_user.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ice_chat/feature/auth_screen/auth_nav.dart';
 
 // final userProvider = Provider<UserService>((ref) => UserService());
 
-class SplshScrn extends ConsumerStatefulWidget {
-  const SplshScrn({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  ConsumerState<SplshScrn> createState() => _SplshScrnState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplshScrnState extends ConsumerState<SplshScrn> {
-  // late final _userService = ref.watch(userProvider);
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Add a delay and then navigate to the next page
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AuthPage()),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

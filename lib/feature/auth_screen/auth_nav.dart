@@ -1,24 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ice_chat/feature/auth_screen/login_screen.dart';
 import 'package:ice_chat/feature/bottom_navigation/nav_bar.dart';
-import 'package:ice_chat/feature/chat_screens/chat_user.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
     return Scaffold(
-      body: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          //user logged in
-          if (snapshot.hasData) {
-            return const ChatScreen();
-          } else {
-            return const NaviBar();
-          }
-        },
+      body: Center(
+        child: FutureBuilder<User?>(
+          future: _auth.authStateChanges().first,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else {
+              if (snapshot.hasData && snapshot.data != null) {
+                return const NaviBar();
+              } else {
+                return const LoginScreen();
+              }
+            }
+          },
+        ),
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:ice_chat/core/constants/appTexts.dart';
-import 'package:ice_chat/core/constants/colors.dart';
 
 class ProfileTile2 extends StatelessWidget {
   final String title;
@@ -25,7 +24,7 @@ class ProfileTile2 extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         decoration: ShapeDecoration(
-          color: Color.fromARGB(255, 185, 200, 218),
+          color: const Color.fromARGB(255, 185, 200, 218),
           shape: RoundedRectangleBorder(
             side: BorderSide(width: 1, color: Colors.black.withOpacity(0.5)),
             borderRadius: BorderRadius.circular(4),

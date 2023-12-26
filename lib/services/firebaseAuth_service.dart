@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ice_chat/core/widgets/error_widget.dart';
 import 'package:ice_chat/feature/auth_screen/login_screen.dart';
 import 'package:ice_chat/feature/bottom_navigation/nav_bar.dart';
-import 'package:ice_chat/feature/chat_screens/chat_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final firebaseAuthprovideService = Provider<FirebaseAuthprovideServiceService>(
@@ -15,6 +14,7 @@ final firebaseAuthprovideService = Provider<FirebaseAuthprovideServiceService>(
 
 class FirebaseAuthprovideServiceService {
   final _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 //reset password
   Future<void> resetPassword(BuildContext context, String email) async {
     try {
@@ -65,6 +65,7 @@ class FirebaseAuthprovideServiceService {
     await ref.doc(user!.uid).set({
       'email': email,
       'name': name,
+      'userId': user.uid,
     });
   }
 
@@ -85,6 +86,8 @@ class FirebaseAuthprovideServiceService {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('userName', userName);
         prefs.setString('userEmail', userEmail);
+        // Store the document ID as well
+        prefs.setString('userDocId', userDocRef.id);
 
         Navigator.pushReplacement(
           context,
@@ -126,7 +129,7 @@ class FirebaseAuthprovideServiceService {
     // Provider.of<userDetails['userRole']Provider>(context, listen: false).clearUserDetails();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('userName');
-
+    prefs.remove('userDocId');
     prefs.remove('userEmail');
 
     Navigator.pushReplacement(
@@ -136,4 +139,28 @@ class FirebaseAuthprovideServiceService {
       ),
     );
   }
+
+//
+  // Future<void> updateUserDetails(
+  //     String userId, String email, String username) async {
+  //   try {
+  //     await _firestore.collection('users').doc(userId).set({
+  //       'email': email,
+  //       'username': username,
+  //       'id': userId,
+  //     });
+  //   } catch (e) {
+  //     print('Error updating user details: $e');
+  //   }
+  // }
+
+  // Future<bool> checkUserExists(String userId) async {
+  //   try {
+  //     var doc = await _firestore.collection('users').doc(userId).get();
+  //     return doc.exists;
+  //   } catch (e) {
+  //     print('Error checking user existence: $e');
+  //     return false;
+  //   }
+  // }
 }

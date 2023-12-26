@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:ice_chat/core/constants/appTexts.dart';
 import 'package:ice_chat/core/constants/colors.dart';
-import 'package:ice_chat/core/widgets/tile_widget.dart';
 import 'package:ice_chat/feature/auth_screen/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -123,14 +122,14 @@ class _SettingPageState extends State<SettingPage> {
                   ListTile(
                     onTap: () {},
                     hoverColor: mTextColor,
-                    leading: Icon(Icons.edit_document),
-                    title: Text('Edit Profile'),
+                    leading: const Icon(Icons.edit_document),
+                    title: const Text('Edit Profile'),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       logout(context);
                     },
-                    child: Text('logout'),
+                    child: const Text('logout'),
                   ),
                 ],
               ),

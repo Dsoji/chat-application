@@ -1,13 +1,11 @@
 // ignore_for_file: file_names
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/core/widgets/reusable_buttons.dart';
-import 'package:ice_chat/core/widgets/error_widget.dart';
 import 'package:ice_chat/feature/auth_screen/login_screen.dart';
 import 'package:ice_chat/services/firebaseAuth_service.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';

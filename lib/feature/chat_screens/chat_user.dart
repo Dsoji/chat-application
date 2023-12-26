@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:ice_chat/core/constants/colors.dart';
-import 'package:ice_chat/feature/auth_screen/login_screen.dart';
+import 'package:ice_chat/feature/chat_screens/chat_page.dart';
+import 'package:ice_chat/feature/chat_screens/view_model/chatview_model.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -53,7 +54,6 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             const Divider(),
-            const Gap(24),
             SizedBox(
               height: 56,
               width: double.infinity,
@@ -71,16 +71,16 @@ class _ChatScreenState extends State<ChatScreen> {
                         cursorColor: Colors.black,
                         onChanged: (query) {
                           // Call a function to filter users based on the search query
-                          // _filterUsers(query);
+                          _filterUsers(query);
                         },
                         decoration: InputDecoration(
-                          fillColor: mTextColor,
+                          fillColor: mOnboardingColor1,
                           filled: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide.none,
                           ),
-                          hintText: 'Search for users',
+                          hintText: 'Search Direct Messages',
                           hintStyle: const TextStyle(
                             color: Colors.black,
                           ),
@@ -99,119 +99,113 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             const Gap(24),
+            // List of political parties
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _usersStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text('Error, might be a network issue');
+                  }
 
-            // Expanded(
-            //   child: StreamBuilder<QuerySnapshot>(
-            //     stream: _usersStream,
-            //     builder: (context, snapshot) {
-            //       if (snapshot.hasError) {
-            //         return const Text('Error, might be a network issue');
-            //       }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: LoadingAnimationWidget.bouncingBall(
+                        color: mOnboardingColor1,
+                        size: 25,
+                      ),
+                    );
+                  }
 
-            //       if (snapshot.connectionState == ConnectionState.waiting) {
-            //         return Center(
-            //           child: LoadingAnimationWidget.staggeredDotsWave(
-            //             color: Colors.black0,
-            //             size: 25,
-            //           ),
-            //         );
-            //       }
-
-            //       return ListView.builder(
-            //         itemCount: snapshot.data!.docs.length,
-            //         itemBuilder: (context, index) {
-            //           return FutureBuilder<Widget>(
-            //             future: _buildUserListItem(
-            //               context,
-            //               snapshot.data!.docs[index],
-            //             ),
-            //             builder: (context, userSnapshot) {
-            //               if (userSnapshot.connectionState ==
-            //                   ConnectionState.done) {
-            //                 return userSnapshot.data!;
-            //               } else {
-            //                 return Center(
-            //                   child: LoadingAnimationWidget.staggeredDotsWave(
-            //                     color: Colors.black0,
-            //                     size: 25,
-            //                   ),
-            //                 );
-            //               }
-            //             },
-            //           );
-            //         },
-            //       );
-            //     },
-            //   ),
-            // ),
+                  return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      return FutureBuilder<Widget>(
+                        future: _buildUserListItem(
+                          context,
+                          snapshot.data!.docs[index],
+                        ),
+                        builder: (context, userSnapshot) {
+                          if (userSnapshot.connectionState ==
+                              ConnectionState.done) {
+                            return userSnapshot.data!;
+                          } else {
+                            return Center(
+                              child: LoadingAnimationWidget.staggeredDotsWave(
+                                color: mOnboardingColor1,
+                                size: 25,
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  // Function to filter users based on the search query
-  // void _filterUsers(String query) {
-  //   // Update the stream based on the search query
-  //   setState(() {
-  //     _usersStream = FirebaseFirestore.instance
-  //         .collection('users')
-  //         .where('username', isGreaterThanOrEqualTo: query)
-  //         .snapshots();
-  //   });
-  // }
-
-  // Build individual user list item
-  // Future<Widget> _buildUserListItem(
-  //     BuildContext context, DocumentSnapshot document) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String email = prefs.getString('email') ?? '';
-  //   String userId = prefs.getString('id') ?? '';
-
-  //   Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-  //   if (email != data['email']) {
-  //     final String receiverUsername = data['username'];
-  //     final String receiverId = data['id'];
-  //     const String image = Assets.pfp1;
-  //     return UserItem(
-  //       userName: receiverUsername,
-  //       recieverId: receiverId,
-  //       senderId: userId,
-  //       onPressed: () {
-  //         Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //             builder: (context) => ChatPage(
-  //               image: image,
-  //               text: receiverUsername,
-  //               recieverUsername: receiverUsername,
-  //               recieverId: receiverId,
-  //               senderId: userId,
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     );
-  //   } else {
-  //     return const SizedBox();
-  //   }
-  // }
-
-  Future<void> logout(BuildContext context) async {
-    const CircularProgressIndicator();
-    await FirebaseAuth.instance.signOut();
-    // Clear the user details using the userDetails['userRole']Provider's clearUserDetails method.
-    // Provider.of<userDetails['userRole']Provider>(context, listen: false).clearUserDetails();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('userName');
-
-    prefs.remove('userEmail');
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      ),
-    );
+// Function to filter users based on the search query
+  void _filterUsers(String query) {
+    // Update the stream based on the search query
+    setState(() {
+      _usersStream = FirebaseFirestore.instance
+          .collection('users')
+          .where('name', isGreaterThanOrEqualTo: query)
+          .snapshots();
+    });
   }
+
+//
+  Future<Widget> _buildUserListItem(
+    BuildContext context,
+    DocumentSnapshot document,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userEmail = prefs.getString('userEmail') ?? '';
+    String currentUserId = prefs.getString('userDocId') ?? '';
+    String userName = prefs.getString('userName') ?? '';
+
+    Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+
+    if (data != null) {
+      String receiverUsername = data['name'] ?? '';
+      String receiverId = data['userId'] ?? '';
+      const String image = ''; // Set your default image here
+
+      // Check if the userEmail is not equal to the receiver's email
+      if (userEmail != data['email']) {
+        return UserItem(
+          userName: receiverUsername,
+          recieverId: receiverId,
+          senderId: currentUserId,
+          onPressed: () {
+            // Navigate to chat page or perform other actions
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatPage(
+                  image: image,
+                  text: receiverUsername,
+                  recieverUsername: receiverUsername,
+                  recieverId: receiverId,
+                  senderId: currentUserId,
+                ),
+              ),
+            );
+          },
+        );
+      }
+    }
+
+    // Return an empty SizedBox if conditions are not met or data is null
+    return const SizedBox();
+  }
+
+//
 }
