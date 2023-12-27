@@ -140,27 +140,33 @@ class FirebaseAuthprovideServiceService {
     );
   }
 
-//
-  // Future<void> updateUserDetails(
-  //     String userId, String email, String username) async {
-  //   try {
-  //     await _firestore.collection('users').doc(userId).set({
-  //       'email': email,
-  //       'username': username,
-  //       'id': userId,
-  //     });
-  //   } catch (e) {
-  //     print('Error updating user details: $e');
-  //   }
-  // }
+  Future<void> updateUserDetails(String username) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userDocId') ?? '';
+    // String username = prefs.getString('userName') ?? '';
+    String userEmail = prefs.getString('userEmail') ?? '';
 
-  // Future<bool> checkUserExists(String userId) async {
-  //   try {
-  //     var doc = await _firestore.collection('users').doc(userId).get();
-  //     return doc.exists;
-  //   } catch (e) {
-  //     print('Error checking user existence: $e');
-  //     return false;
-  //   }
-  // }
+    // Get current user info
+    final String currentUserId = userId;
+    final String currentUserEmail = userEmail;
+    try {
+      await _firestore.collection('users').doc(currentUserId).set({
+        'name': username,
+        'email': currentUserEmail,
+        'userId': currentUserId
+      });
+    } catch (e) {
+      print('Error updating user details: $e');
+    }
+  }
+
+  Future<bool> checkUserExists(String userId) async {
+    try {
+      var doc = await _firestore.collection('users').doc(userId).get();
+      return doc.exists;
+    } catch (e) {
+      print('Error checking user existence: $e');
+      return false;
+    }
+  }
 }

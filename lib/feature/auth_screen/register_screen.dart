@@ -1,5 +1,7 @@
 // ignore_for_file: file_names
 
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +10,7 @@ import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/core/widgets/reusable_buttons.dart';
 import 'package:ice_chat/feature/auth_screen/login_screen.dart';
 import 'package:ice_chat/services/firebaseAuth_service.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -25,6 +28,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _passwordController = TextEditingController();
   final _confirmpasswordController = TextEditingController();
   final _usernameController = TextEditingController();
+  XFile? _selectedImage;
   bool isLoading = false;
 
   @override
@@ -83,8 +87,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       fontWeight: FontWeight.bold,
                       color: Colors.black38),
                 ),
-                const SizedBox(
-                  height: 20,
+                const Gap(
+                  20,
+                ),
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage('assets/default.png'),
+                ),
+                const Gap(
+                  20,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -208,10 +219,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             });
 
                             await registerprovideRef.signinUp(
-                                context,
-                                _emailController.text,
-                                _passwordController.text,
-                                _usernameController.text);
+                              context,
+                              _emailController.text,
+                              _passwordController.text,
+                              _usernameController.text,
+                            );
 
                             setState(() {
                               isLoading = false;

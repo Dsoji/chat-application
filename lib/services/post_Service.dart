@@ -68,14 +68,24 @@ class PostService extends ChangeNotifier {
     await _firestore.collection("posts").add(newMsg.toMap());
   }
 
-  // Get messages
+  // Get posts
   Stream<QuerySnapshot> getPosts() {
     // Construct chat room id
 
-    // String chatRoomId = ids.join("_");
-
     return _firestore
         .collection("posts")
+        .orderBy('timestamp', descending: true)
+        .snapshots();
+  }
+
+  //get user posts
+  Stream<QuerySnapshot> getUserPosts() async* {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userDocId');
+    // Assuming _firestore is an instance of FirebaseFirestore
+    yield* _firestore
+        .collection("posts")
+        .where('senderId', isEqualTo: userId)
         .orderBy('timestamp', descending: true)
         .snapshots();
   }

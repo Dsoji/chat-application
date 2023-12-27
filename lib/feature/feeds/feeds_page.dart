@@ -22,6 +22,7 @@ class FeedsPage extends StatefulWidget {
 }
 
 class _FeedsPageState extends State<FeedsPage> {
+  bool isLoading = false;
   late Future<Map<String, String>> _userDetails;
   late String _userId;
   @override
@@ -53,7 +54,13 @@ class _FeedsPageState extends State<FeedsPage> {
     final String textMessage = _postController.text.trim();
     final XFile? selectedImage = _selectedImage;
 
+    if (_postController.text.isNotEmpty || selectedImage != null) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     // Allow sending a message even if only text exists and no image
+
     await _postService.makePosts(
       _userId,
       textMessage,
@@ -63,6 +70,7 @@ class _FeedsPageState extends State<FeedsPage> {
     _postController.clear();
     setState(() {
       _selectedImage = null;
+      isLoading = false;
     });
   }
 
@@ -84,7 +92,7 @@ class _FeedsPageState extends State<FeedsPage> {
                       });
                     }
                   },
-                  icon: const Icon(Iconsax.gallery),
+                  icon: const Icon(Iconsax.gallery_add),
                   color: mOnboardingColor1,
                 ),
                 Expanded(
@@ -109,13 +117,15 @@ class _FeedsPageState extends State<FeedsPage> {
             ),
           ),
           const SizedBox(width: 8.0),
-          SmallIconButton(
-            onPressed: sendPost,
-            highcolor: mOnboardingColor1,
-            color: Colors.white,
-            icon: const Icon(Iconsax.send_2),
-            thisighcolor: mOnboardingColor1,
-          ),
+          isLoading
+              ? LoadingAnimationWidget.staggeredDotsWave(
+                  color: mOnboardingColor1, size: 25)
+              : SmallIconButton(
+                  highcolor: mOnboardingColor1,
+                  color: Colors.white,
+                  icon: const Icon(Iconsax.send_2),
+                  thisighcolor: mOnboardingColor1,
+                  onPressed: sendPost),
         ],
       ),
     );
@@ -248,7 +258,7 @@ class _FeedsPageState extends State<FeedsPage> {
             itemBuilder: (context, index) {
               return _buildMessageItem(snapshot.data!.docs[index]);
             },
-            reverse: true,
+            reverse: false,
             physics: const BouncingScrollPhysics(),
           );
         } else {
@@ -304,6 +314,16 @@ class _FeedsPageState extends State<FeedsPage> {
               ],
             ),
           ),
+          if (_selectedImage != null)
+            ListTile(
+              tileColor: const Color.fromARGB(255, 230, 227, 227),
+              leading: Icon(
+                Iconsax.gallery,
+                color: mOnboardingColor1,
+              ),
+              title: const Text(' Image ready to upload',
+                  style: TextStyle(color: Colors.black)),
+            ),
           Expanded(
             child: _buildMessageList(),
           ),

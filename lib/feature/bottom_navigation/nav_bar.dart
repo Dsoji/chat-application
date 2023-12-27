@@ -3,7 +3,8 @@ import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/feature/bottom_navigation/bottom_nav.dart';
 import 'package:ice_chat/feature/chat_screens/chat_user.dart';
 import 'package:ice_chat/feature/feeds/feeds_page.dart';
-import 'package:ice_chat/feature/settings/settings_page.dart';
+import 'package:ice_chat/feature/profile/profile_page.dart';
+import 'package:iconsax/iconsax.dart';
 
 class NaviBar extends StatefulWidget {
   const NaviBar({
@@ -18,7 +19,7 @@ class _NaviBarState extends State<NaviBar> {
   late List<Widget> pageList = [
     FeedsPage(),
     const ChatScreen(),
-    const SettingPage(),
+    const ProfilePage(),
   ];
   int pageIndex = 0;
   Color color = Colors.grey;
@@ -55,12 +56,12 @@ class _NaviBarState extends State<NaviBar> {
                   },
                   icon: pageIndex == 0
                       ? Icon(
-                          Icons.search,
+                          Iconsax.flash_1,
                           color: mOnboardingColor1,
                           size: 28,
                         )
                       : const Icon(
-                          Icons.search,
+                          Iconsax.flash_1,
                           color: Colors.grey,
                           size: 18,
                         ),
@@ -72,12 +73,12 @@ class _NaviBarState extends State<NaviBar> {
                   },
                   icon: pageIndex == 1
                       ? Icon(
-                          Icons.chat,
+                          Iconsax.messages,
                           color: mOnboardingColor1,
                           size: 28,
                         )
                       : const Icon(
-                          Icons.chat,
+                          Iconsax.messages,
                           color: Colors.grey,
                           size: 18,
                         ),
@@ -89,12 +90,12 @@ class _NaviBarState extends State<NaviBar> {
                   },
                   icon: pageIndex == 2
                       ? Icon(
-                          Icons.settings,
+                          Iconsax.personalcard,
                           color: mOnboardingColor1,
                           size: 28,
                         )
                       : const Icon(
-                          Icons.settings,
+                          Iconsax.personalcard,
                           color: Colors.grey,
                           size: 18,
                         ),

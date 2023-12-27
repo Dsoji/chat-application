@@ -7,6 +7,7 @@ import 'package:ice_chat/core/constants/appTexts.dart';
 import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/core/util/date_util.dart';
 import 'package:ice_chat/feature/auth_screen/login_screen.dart';
+import 'package:ice_chat/feature/profile/edit_profile.dart';
 import 'package:ice_chat/services/post_Service.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/majesticons.dart';
@@ -16,14 +17,14 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingPage extends StatefulWidget {
-  const SettingPage({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
   @override
-  State<SettingPage> createState() => _SettingPageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class _ProfilePageState extends State<ProfilePage> {
   late String currentUserId;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final PostService _postService = PostService();
@@ -127,18 +128,22 @@ class _SettingPageState extends State<SettingPage> {
                         ),
                       ),
                       const Spacer(),
-                      InkWell(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => const EditProfile()),
-                          // );
-                        },
-                        child: Text('EDIT',
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: mOnboardingColor1,
-                                fontWeight: FontWeight.w600)),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const EditProfile()),
+                            );
+                          },
+                          child: Text('EDIT',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: mOnboardingColor1,
+                                  fontWeight: FontWeight.w600)),
+                        ),
                       ),
                     ],
                   ),
@@ -171,7 +176,7 @@ class _SettingPageState extends State<SettingPage> {
     //     _firestore.collection('users').doc(widget.senderId);
 
     // String documentId = userDocSnapshot.id;
-    String senderId = data['senderId'];
+    // String senderId = data['senderId'];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
@@ -267,7 +272,7 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget _buildMessageList() {
     return StreamBuilder(
-      stream: _postService.getPosts(),
+      stream: _postService.getUserPosts(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error ${snapshot.error}');
@@ -279,16 +284,16 @@ class _SettingPageState extends State<SettingPage> {
         }
         if (snapshot.data!.docs.isNotEmpty) {
           // Filter messages based on the current user ID
-          final filteredDocs = snapshot.data!.docs
-              .where((doc) => doc['senderId'] == ' ${currentUserId}')
-              .toList();
+          // final filteredDocs = snapshot.data!.docs
+          //     .where((doc) => doc['senderId'] == ' ${currentUserId}')
+          //     .toList();
 
           return ListView.builder(
-            itemCount: filteredDocs.length,
+            itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              return _buildMessageItem(filteredDocs[index]);
+              return _buildMessageItem(snapshot.data!.docs[index]);
             },
-            reverse: true,
+            reverse: false,
             physics: const BouncingScrollPhysics(),
           );
         } else {
