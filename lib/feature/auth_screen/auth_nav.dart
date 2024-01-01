@@ -7,11 +7,11 @@ class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
   @override
   Widget build(BuildContext context) {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
     return Scaffold(
       body: Center(
         child: FutureBuilder<User?>(
-          future: _auth.authStateChanges().first,
+          future: auth.authStateChanges().first,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();

@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, file_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -59,13 +59,11 @@ class FirebaseAuthprovideServiceService {
     String email,
     String name,
   ) async {
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     var user = _auth.currentUser;
     CollectionReference ref = FirebaseFirestore.instance.collection('users');
     await ref.doc(user!.uid).set({
       'email': email,
       'name': name,
-      'userId': user.uid,
     });
   }
 
@@ -86,6 +84,7 @@ class FirebaseAuthprovideServiceService {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('userName', userName);
         prefs.setString('userEmail', userEmail);
+
         // Store the document ID as well
         prefs.setString('userDocId', userDocRef.id);
 
@@ -103,12 +102,6 @@ class FirebaseAuthprovideServiceService {
   Future<void> signIn(
       BuildContext context, String email, String password) async {
     try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
       await route(context);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -140,11 +133,14 @@ class FirebaseAuthprovideServiceService {
     );
   }
 
+  ///update user details
   Future<void> updateUserDetails(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userId = prefs.getString('userDocId') ?? '';
     // String username = prefs.getString('userName') ?? '';
     String userEmail = prefs.getString('userEmail') ?? '';
+
+    String fcmToken = prefs.getString('fcm_token') ?? '';
 
     // Get current user info
     final String currentUserId = userId;
@@ -153,7 +149,8 @@ class FirebaseAuthprovideServiceService {
       await _firestore.collection('users').doc(currentUserId).set({
         'name': username,
         'email': currentUserEmail,
-        'userId': currentUserId
+        'userId': currentUserId,
+        'fcmtoken': fcmToken,
       });
     } catch (e) {
       print('Error updating user details: $e');
@@ -167,6 +164,17 @@ class FirebaseAuthprovideServiceService {
     } catch (e) {
       print('Error checking user existence: $e');
       return false;
+    }
+  }
+
+  //update userFCMtoken
+  Future<void> updateFCMToken(String userId, String fcmToken) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'fcmtoken': fcmToken,
+      });
+    } catch (e) {
+      print('Error updating FCM token: $e');
     }
   }
 }

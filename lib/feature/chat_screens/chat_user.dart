@@ -34,6 +34,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      backgroundColor: grey30,
       appBar: AppBar(
         // automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
@@ -82,12 +83,12 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           hintText: 'Search Direct Messages',
                           hintStyle: const TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                           prefixIcon: IconButton(
                             icon: const Icon(
                               Iconsax.search_normal,
-                              color: Colors.black,
+                              color: Colors.white,
                             ),
                             onPressed: () {},
                           ),
@@ -169,7 +170,6 @@ class _ChatScreenState extends State<ChatScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userEmail = prefs.getString('userEmail') ?? '';
     String currentUserId = prefs.getString('userDocId') ?? '';
-    String userName = prefs.getString('userName') ?? '';
 
     Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
 

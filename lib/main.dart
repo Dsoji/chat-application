@@ -4,10 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ice_chat/feature/splashscreen.dart';
 import 'package:ice_chat/firebase_options.dart';
+import 'package:ice_chat/core/constants/colors.dart';
+import 'package:ice_chat/services/firebaseNoti_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseApi().initNotification();
 
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
@@ -29,7 +32,12 @@ class MyApp extends StatelessWidget {
       title: 'ice chat',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: mOnboardingColor1),
+        appBarTheme: const AppBarTheme(
+            color: Colors.white,
+            // titleTextStyle: TextStyles.onboard,
+            centerTitle: true,
+            iconTheme: IconThemeData(color: Colors.black)),
         useMaterial3: true,
       ),
       home: const SplashScreen(),

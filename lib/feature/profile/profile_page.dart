@@ -12,7 +12,6 @@ import 'package:ice_chat/services/post_Service.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/majesticons.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,9 +25,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late String currentUserId;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final PostService _postService = PostService();
-  XFile? _selectedImage;
 
   @override
   void initState() {
@@ -52,6 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: grey30,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
@@ -215,7 +213,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const Gap(4),
                   Text(
-                    "${MyDateUtil.getFormattedTime(context: context, time: data['timestamp'])}",
+                    MyDateUtil.getFormattedTime(
+                        context: context, time: data['timestamp']),
                     style: TextStyle(fontSize: 13, color: mOnboardingColor1),
                   ),
                   const Spacer(),
@@ -297,13 +296,16 @@ class _ProfilePageState extends State<ProfilePage> {
             physics: const BouncingScrollPhysics(),
           );
         } else {
-          return Center(
-            child:
-                Text('👋 Navigate to the feeds page to make your first post!',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: mOnboardingColor1,
-                    )),
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Center(
+              child:
+                  Text('👋 Navigate to the feeds page to make your first post!',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: mOnboardingColor1,
+                      )),
+            ),
           );
         }
       },

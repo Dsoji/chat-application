@@ -10,7 +10,6 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/majesticons.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +22,6 @@ class FeedsPage extends StatefulWidget {
 
 class _FeedsPageState extends State<FeedsPage> {
   bool isLoading = false;
-  late Future<Map<String, String>> _userDetails;
   late String _userId;
   @override
   void initState() {
@@ -46,7 +44,6 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   final TextEditingController _postController = TextEditingController();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final PostService _postService = PostService();
   XFile? _selectedImage;
 
@@ -133,108 +130,102 @@ class _FeedsPageState extends State<FeedsPage> {
 
   Widget _buildMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    Timestamp timestamp = data['timestamp'];
-    DateTime dateTime = timestamp.toDate();
-    String formattedDateTime = DateFormat('h:mm a').format(dateTime);
     // DocumentReference userDocRef =
     //     _firestore.collection('users').doc(widget.senderId);
 
     // String documentId = userDocSnapshot.id;
-    String senderId = data['senderId'];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
-      child: Card(
-        elevation: 2,
-        color: Colors.white,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          alignment: Alignment.centerLeft,
-          // decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.circular(20.0),
-          //     border: Border.all(
-          //       color: mOnboardingColor1,
-          //       width: 2,
-          //     )),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const CircleAvatar(
-                    radius: 15,
-                    backgroundColor: Colors.blue,
-                    // backgroundImage: AssetImage(profileImage),
-                  ),
-                  const Gap(4),
-                  Text(
-                    "'${data['senderUsername']} '",
-                    style: TextStyle(fontSize: 15, color: mOnboardingColor1),
-                  ),
-                  const Gap(4),
-                  Container(
-                    height: 4,
-                    width: 4,
-                    decoration: BoxDecoration(
-                      color: mOnboardingColor1,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
-                  const Gap(4),
-                  Text(
-                    "${MyDateUtil.getFormattedTime(context: context, time: data['timestamp'])}",
-                    style: TextStyle(fontSize: 13, color: mOnboardingColor1),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                      onPressed: () {},
-                      color: mOnboardingColor1,
-                      icon: const Iconify(
-                        Majesticons.more_menu_line,
-                      )),
-                ],
-              ),
-              const Divider(),
-              const Gap(2),
-              if (data['imageUrl'] != null &&
-                  data['imageUrl'].toString().isNotEmpty)
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.centerLeft,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.0),
+            border: Border.all(
+              color: mOnboardingColor1,
+              width: 2,
+            )),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Colors.blue,
+                  // backgroundImage: AssetImage(profileImage),
+                ),
+                const Gap(4),
+                Text(
+                  "'${data['senderUsername']} '",
+                  style: TextStyle(fontSize: 15, color: mOnboardingColor1),
+                ),
+                const Gap(4),
                 Container(
-                  // constraints: const BoxConstraints(maxWidth: 250),
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 5.0),
+                  height: 4,
+                  width: 4,
+                  decoration: BoxDecoration(
+                    color: mOnboardingColor1,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                ),
+                const Gap(4),
+                Text(
+                  MyDateUtil.getFormattedTime(
+                      context: context, time: data['timestamp']),
+                  style: TextStyle(fontSize: 13, color: mOnboardingColor1),
+                ),
+                const Spacer(),
+                IconButton(
+                    onPressed: () {},
+                    color: mOnboardingColor1,
+                    icon: const Iconify(
+                      Majesticons.more_menu_line,
+                    )),
+              ],
+            ),
+            const Divider(),
+            const Gap(2),
+            if (data['imageUrl'] != null &&
+                data['imageUrl'].toString().isNotEmpty)
+              Container(
+                // constraints: const BoxConstraints(maxWidth: 250),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
 
-                  width: double.infinity,
-                  height: 200,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: CachedNetworkImage(
-                      imageUrl: data['imageUrl'],
-                      placeholder: ((context, url) => const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Center(child: CircularProgressIndicator()),
-                          )),
-                      fit: BoxFit.cover,
-                      errorWidget: (context, url, error) => const Icon(
-                        Icons.image_not_supported_outlined,
-                      ),
+                width: double.infinity,
+                height: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: CachedNetworkImage(
+                    imageUrl: data['imageUrl'],
+                    placeholder: ((context, url) => const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        )),
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) => const Icon(
+                      Icons.image_not_supported_outlined,
                     ),
                   ),
                 ),
-              const SizedBox(height: 5.0),
-              if (data['message'] != null &&
-                  data['message'].toString().isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    '${data['message']}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
+              ),
+            const SizedBox(height: 5.0),
+            if (data['message'] != null &&
+                data['message'].toString().isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  '${data['message']}',
+                  style: const TextStyle(fontSize: 16),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );
@@ -277,9 +268,9 @@ class _FeedsPageState extends State<FeedsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: grey30,
       appBar: AppBar(
-        // automaticallyImplyLeading: true,
-        backgroundColor: Colors.transparent,
+        elevation: 1,
         leading: const Row(
           children: [
             Gap(16),
@@ -288,7 +279,6 @@ class _FeedsPageState extends State<FeedsPage> {
             ),
           ],
         ),
-        elevation: 0,
         centerTitle: true,
         title: Text(
           'Feeds',

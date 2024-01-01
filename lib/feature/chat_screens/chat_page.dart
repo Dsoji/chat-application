@@ -83,7 +83,7 @@ class _ChatPageState extends State<ChatPage> {
               decoration: BoxDecoration(
                 color: widget.senderId == senderId
                     ? mOnboardingColor1
-                    : Color.fromARGB(255, 96, 108, 133),
+                    : const Color.fromARGB(255, 96, 108, 133),
                 borderRadius: BorderRadius.circular(20.0),
               ),
               child: Text(

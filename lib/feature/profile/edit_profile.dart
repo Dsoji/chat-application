@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -15,7 +14,6 @@ class EditProfile extends ConsumerStatefulWidget {
 }
 
 class _EditProfileState extends ConsumerState<EditProfile> {
-  final _auth = FirebaseAuth.instance;
   bool showProgress = false;
 
   final _usernameController = TextEditingController();
@@ -32,6 +30,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   Widget build(BuildContext context) {
     final editprovideRef = ref.watch(firebaseAuthprovideService);
     return Scaffold(
+      backgroundColor: grey30,
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: Colors.transparent,
@@ -72,7 +71,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                 ),
               ),
             ),
-            Gap(72),
+            const Gap(72),
             isLoading
                 ? LoadingAnimationWidget.staggeredDotsWave(
                     color: mOnboardingColor1, size: 25)

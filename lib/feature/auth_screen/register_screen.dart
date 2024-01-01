@@ -1,8 +1,5 @@
 // ignore_for_file: file_names
 
-import 'dart:io';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -10,7 +7,6 @@ import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/core/widgets/reusable_buttons.dart';
 import 'package:ice_chat/feature/auth_screen/login_screen.dart';
 import 'package:ice_chat/services/firebaseAuth_service.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -21,14 +17,12 @@ class RegisterScreen extends ConsumerStatefulWidget {
 }
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
-  final _auth = FirebaseAuth.instance;
   bool showProgress = false;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmpasswordController = TextEditingController();
   final _usernameController = TextEditingController();
-  XFile? _selectedImage;
   bool isLoading = false;
 
   @override
@@ -51,8 +45,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       //extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2),
             border: Border.all(width: 2, color: Colors.white30),
@@ -70,8 +62,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       shape: BoxShape.circle, color: Colors.blueGrey.shade50),
                   child: Image.asset('assets/amico.png'),
                 ),
-                const SizedBox(
-                  height: 20,
+                const Gap(
+                  20,
                 ),
                 const Text(
                   "Let's get started",
@@ -90,10 +82,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 const Gap(
                   20,
                 ),
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage('assets/default.png'),
-                ),
+                // const CircleAvatar(
+                //   radius: 50,
+                //   backgroundImage: AssetImage('assets/default.png'),
+                // ),
                 const Gap(
                   20,
                 ),
@@ -201,8 +193,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ],
                 ),
 
-                const SizedBox(
-                  height: 16,
+                const Gap(
+                  16,
                 ),
                 isLoading
                     ? LoadingAnimationWidget.staggeredDotsWave(
@@ -210,7 +202,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     : ColorButton(
                         width: 300,
                         color: mOnboardingColor1,
-                        text: "Next",
+                        text: "Register",
                         textColor: Colors.white,
                         onPressed: () async {
                           if (_emailController.text.isNotEmpty) {
@@ -231,6 +223,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           }
                         },
                       ),
+                const Gap(
+                  26,
+                ),
               ]),
             ),
           ),
