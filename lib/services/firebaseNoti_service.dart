@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:ice_chat/services/firebaseAuth_service.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,7 +44,7 @@ class FirebaseApi {
             .updateFCMToken(userId, newFCMToken);
       }
     } catch (e) {
-      print('Error updating FCM token on device switch: $e');
+      _logger.e('Error updating FCM token on device switch: $e');
     }
   }
 }

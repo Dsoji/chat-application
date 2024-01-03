@@ -7,10 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ice_chat/core/widgets/error_widget.dart';
 import 'package:ice_chat/feature/auth_screen/login_screen.dart';
 import 'package:ice_chat/feature/bottom_navigation/nav_bar.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final firebaseAuthprovideService = Provider<FirebaseAuthprovideServiceService>(
     (ref) => FirebaseAuthprovideServiceService());
+
+final _logger = Logger();
 
 class FirebaseAuthprovideServiceService {
   final _auth = FirebaseAuth.instance;
@@ -24,7 +27,7 @@ class FirebaseAuthprovideServiceService {
           "Password reset email sent successfully!, check mail", context);
     } on FirebaseAuthException catch (e) {
       // Handle errors if the password reset email cannot be sent
-      print('Error sending password reset email: $e');
+      _logger.e('Error sending password reset email: $e');
       displayMessage("Reset link not sent, please try again", context);
     }
   }
@@ -37,9 +40,6 @@ class FirebaseAuthprovideServiceService {
     String name,
   ) async {
     try {
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
-
       await postDetailsToFirestore(context, email, name);
 
       Navigator.pushReplacement(
@@ -63,7 +63,7 @@ class FirebaseAuthprovideServiceService {
     CollectionReference ref = FirebaseFirestore.instance.collection('users');
     await ref
         .doc(user!.uid)
-        .set({'email': email, 'name': name, 'userId': user!.uid});
+        .set({'email': email, 'name': name, 'userId': user.uid});
   }
 
 //login
@@ -91,12 +91,12 @@ class FirebaseAuthprovideServiceService {
         );
       } else {
         // Handle the case where the document doesn't exist
-        print('User document does not exist for UID: ${user.uid}');
+        _logger.e('User document does not exist for UID: ${user.uid}');
       }
     } catch (e) {
       // Handle errors if any
       displayMessage('Error fetching user data: $e', context);
-      print('Error fetching user data: $e');
+      _logger.e('Error fetching user data: $e');
     }
   }
 
@@ -175,7 +175,7 @@ class FirebaseAuthprovideServiceService {
         'fcmtoken': fcmToken,
       });
     } catch (e) {
-      print('Error updating user details: $e');
+      _logger.e('Error updating user details: $e');
     }
   }
 
@@ -184,7 +184,7 @@ class FirebaseAuthprovideServiceService {
       var doc = await _firestore.collection('users').doc(userId).get();
       return doc.exists;
     } catch (e) {
-      print('Error checking user existence: $e');
+      _logger.e('Error checking user existence: $e');
       return false;
     }
   }
@@ -196,7 +196,7 @@ class FirebaseAuthprovideServiceService {
         'fcmtoken': fcmToken,
       });
     } catch (e) {
-      print('Error updating FCM token: $e');
+      _logger.e('Error updating FCM token: $e');
     }
   }
 }

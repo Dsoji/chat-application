@@ -1,8 +1,8 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/core/util/date_util.dart';
 import 'package:ice_chat/core/widgets/reusable_buttons.dart';
 import 'package:ice_chat/services/chat_service.dart';
-import 'package:intl/intl.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class ChatPage extends StatefulWidget {
+class ChatPage extends ConsumerStatefulWidget {
   final String text;
   final String image;
   final String recieverId;
@@ -27,14 +27,31 @@ class ChatPage extends StatefulWidget {
     required this.senderId,
   }) : super(key: key);
 
+  // const ChatPage({
+  //   Key? key,
+  //   required this.text,
+  //   required this.image,
+  //   required this.recieverId,
+  //   required this.recieverUsername,
+  //   required this.senderId,
+  // }) : super(key: key);
+
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends ConsumerState<ChatPage> {
   final TextEditingController _msgController = TextEditingController();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final ChatService _chatService = ChatService();
+  late final ChatService chatService;
+
+  @override
+  void initState() {
+    super.initState();
+    chatService = ref.read(chatServiceProvider);
+    // messageListProvider = ref.read(messageListProvider); // Assuming you have a provider for messages
+  }
+
+  // final chatprovideRef = ref.watch(chatServiceProvider);
   XFile? _selectedImage;
 
   void sendMsg() async {
@@ -42,7 +59,7 @@ class _ChatPageState extends State<ChatPage> {
     final XFile? selectedImage = _selectedImage;
 
     // Allow sending a message even if only text exists and no image
-    await _chatService.sendMessage(
+    await chatService.sendMessage(
       widget.recieverId,
       textMessage,
       selectedImage,
@@ -56,11 +73,6 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    Timestamp timestamp = data['timestamp'];
-    DateTime dateTime = timestamp.toDate();
-    String formattedDateTime = DateFormat('h:mm a').format(dateTime);
-    DocumentReference userDocRef =
-        _firestore.collection('users').doc(widget.senderId);
 
     // String documentId = userDocSnapshot.id;
     String senderId = data['senderId'];
@@ -140,7 +152,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageList() {
     return StreamBuilder(
-      stream: _chatService.getMsg(widget.recieverId, widget.senderId),
+      stream: chatService.getMsg(widget.recieverId, widget.senderId),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error ${snapshot.error}');
@@ -183,7 +195,7 @@ class _ChatPageState extends State<ChatPage> {
               children: [
                 IconButton(
                   onPressed: () async {
-                    final XFile? pickedImage = await _chatService.pickImage();
+                    final XFile? pickedImage = await chatService.pickImage();
                     if (pickedImage != null) {
                       setState(() {
                         _selectedImage = pickedImage;
@@ -196,7 +208,7 @@ class _ChatPageState extends State<ChatPage> {
                 Expanded(
                   child: TextField(
                     controller: _msgController,
-                    style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +14,6 @@ import 'package:ice_chat/services/post_Service.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/majesticons.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -181,9 +182,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    Timestamp timestamp = data['timestamp'];
-    DateTime dateTime = timestamp.toDate();
-    String formattedDateTime = DateFormat('h:mm a').format(dateTime);
     // DocumentReference userDocRef =
     //     _firestore.collection('users').doc(widget.senderId);
 

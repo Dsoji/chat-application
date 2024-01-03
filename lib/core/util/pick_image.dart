@@ -1,4 +1,7 @@
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
+
+final _logger = Logger();
 
 pickImage(ImageSource source) async {
   final ImagePicker imagePicker = ImagePicker();
@@ -6,5 +9,5 @@ pickImage(ImageSource source) async {
   if (file != null) {
     return await file.readAsBytes();
   }
-  print('No Image Selected');
+  _logger.e('No Image Selected');
 }

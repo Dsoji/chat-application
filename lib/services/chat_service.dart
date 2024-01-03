@@ -3,9 +3,15 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ice_chat/feature/chat_screens/model/chat_model.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final chatServiceProvider = ChangeNotifierProvider((ref) => ChatService());
+
+final _logger = Logger();
 
 class ChatService extends ChangeNotifier {
   // Get instance
@@ -22,7 +28,7 @@ class ChatService extends ChangeNotifier {
       );
       return pickedFile;
     } catch (e) {
-      print('Error picking image: $e');
+      _logger.e('Error picking image: $e');
       return null;
     }
   }

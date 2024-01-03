@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,14 +7,17 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:ice_chat/feature/feeds/model/post_model.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'package:ice_chat/feature/feeds/model/post_model.dart';
+
 class PostService extends ChangeNotifier {
   // Get instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final ImagePicker _imagePicker = ImagePicker();
+  final _logger = Logger();
 
   // Existing methods...
 
@@ -23,7 +28,7 @@ class PostService extends ChangeNotifier {
       );
       return pickedFile;
     } catch (e) {
-      print('Error picking image: $e');
+      _logger.e('Error picking image: $e');
       return null;
     }
   }
