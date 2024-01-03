@@ -17,7 +17,7 @@ class NaviBar extends StatefulWidget {
 
 class _NaviBarState extends State<NaviBar> {
   late List<Widget> pageList = [
-    FeedsPage(),
+    const FeedsPage(),
     const ChatScreen(),
     const ProfilePage(),
   ];
@@ -43,7 +43,7 @@ class _NaviBarState extends State<NaviBar> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.black
+                    ? const Color.fromARGB(255, 17, 16, 16)
                     : Colors.white),
             padding: const EdgeInsets.all(15),
             child: Row(
@@ -90,12 +90,12 @@ class _NaviBarState extends State<NaviBar> {
                   },
                   icon: pageIndex == 2
                       ? Icon(
-                          Iconsax.personalcard,
+                          Iconsax.profile_circle,
                           color: mOnboardingColor1,
                           size: 28,
                         )
                       : const Icon(
-                          Iconsax.personalcard,
+                          Iconsax.profile_circle,
                           color: Colors.grey,
                           size: 18,
                         ),

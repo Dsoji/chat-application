@@ -41,7 +41,7 @@ class _UserItemState extends State<UserItem> {
               children: [
                 ListTile(
                   leading: const CircleAvatar(
-                    backgroundImage: AssetImage(''),
+                    backgroundImage: AssetImage('assets/default.png'),
                     radius: 29.0,
                   ),
                   title: Text(
@@ -63,7 +63,7 @@ class _UserItemState extends State<UserItem> {
                                 'no message yet' // Use null-aware operator here
                         : 'no message yet',
                     maxLines: 1,
-                    style: TextStyle(color: mTextColor2),
+                    style: TextStyle(color: mOnboardingColor1),
                   ),
 
                   trailing: _message == null
@@ -81,7 +81,7 @@ class _UserItemState extends State<UserItem> {
                           Text(
                               MyDateUtil.getLastMessageTime(
                                   context: context, time: _message!.timestamp),
-                              style: const TextStyle(color: Colors.black54),
+                              style: TextStyle(color: mOnboardingColor1),
                             ),
 
                   onTap: widget.onPressed,

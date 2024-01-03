@@ -38,71 +38,63 @@ class _ResetScreenState extends ConsumerState<ResetScreen> {
         title: const Text(
           'Reset Password',
           style: TextStyle(
-              fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black38),
+              fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       //extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            border: Border.all(width: 2, color: Colors.white30),
-          ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  const Gap(24),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.blueGrey),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        hintText: "Email",
-                        fillColor: Colors.grey[200],
-                        filled: true,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                const Gap(24),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.blueGrey),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      hintText: "Email",
+                      fillColor: const Color.fromARGB(255, 129, 125, 125),
+                      filled: true,
                     ),
                   ),
-                  const Gap(
-                    16,
-                  ),
-                  isLoading
-                      ? LoadingAnimationWidget.staggeredDotsWave(
-                          color: mOnboardingColor1, size: 25)
-                      : ColorButton(
-                          width: 300,
-                          color: mOnboardingColor1,
-                          text: "Next",
-                          textColor: Colors.white,
-                          onPressed: () async {
-                            if (_emailController.text.isNotEmpty) {
-                              setState(() {
-                                isLoading = true;
-                              });
+                ),
+                const Gap(
+                  16,
+                ),
+                isLoading
+                    ? LoadingAnimationWidget.staggeredDotsWave(
+                        color: mOnboardingColor1, size: 25)
+                    : ColorButton(
+                        width: 300,
+                        color: mOnboardingColor1,
+                        text: "Next",
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          if (_emailController.text.isNotEmpty) {
+                            setState(() {
+                              isLoading = true;
+                            });
 
-                              await resetPswrdprovideRef.resetPassword(
-                                  context, _emailController.text);
+                            await resetPswrdprovideRef.resetPassword(
+                                context, _emailController.text);
 
-                              setState(() {
-                                isLoading = false;
-                              });
-                            }
-                          },
-                        ),
-                ],
-              ),
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        },
+                      ),
+              ],
             ),
           ),
         ),

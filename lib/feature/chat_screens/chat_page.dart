@@ -205,9 +205,6 @@ class _ChatPageState extends State<ChatPage> {
                       filled: true,
                       fillColor: mOnboardingColor1,
                       hintText: 'Enter a message',
-                      hintStyle: const TextStyle(
-                        color: Colors.black,
-                      ),
                     ),
                   ),
                 ),
@@ -237,14 +234,13 @@ class _ChatPageState extends State<ChatPage> {
               ? Colors.white
               : mOnboardingColor1,
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        elevation: 2,
         centerTitle: true,
         title: CircleAvatar(
           backgroundImage: AssetImage(widget.image),
         ),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(30),
+          preferredSize: const Size.fromHeight(33),
           child: Center(
             child: Text(
               widget.text,
@@ -261,7 +257,6 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Column(
         children: [
-          const Divider(),
           Expanded(
             child: _buildMessageList(),
           ),

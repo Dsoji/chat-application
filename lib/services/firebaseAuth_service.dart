@@ -61,13 +61,12 @@ class FirebaseAuthprovideServiceService {
   ) async {
     var user = _auth.currentUser;
     CollectionReference ref = FirebaseFirestore.instance.collection('users');
-    await ref.doc(user!.uid).set({
-      'email': email,
-      'name': name,
-    });
+    await ref
+        .doc(user!.uid)
+        .set({'email': email, 'name': name, 'userId': user!.uid});
   }
 
-  ///login user
+//login
   Future<void> route(BuildContext context) async {
     User? user = FirebaseAuth.instance.currentUser;
     var userDocRef =
@@ -77,24 +76,26 @@ class FirebaseAuthprovideServiceService {
       DocumentSnapshot documentSnapshot = await userDocRef.get();
 
       if (documentSnapshot.exists) {
-        String userName = documentSnapshot.get('name');
-        String userEmail = documentSnapshot.get('email');
+        String userName = documentSnapshot.get('name') ?? ''; // handle null
+        String userEmail = documentSnapshot.get('email') ?? ''; // handle null
 
         // Store user information in SharedPreferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('userName', userName);
         prefs.setString('userEmail', userEmail);
-
-        // Store the document ID as well
         prefs.setString('userDocId', userDocRef.id);
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const NaviBar()),
         );
+      } else {
+        // Handle the case where the document doesn't exist
+        print('User document does not exist for UID: ${user.uid}');
       }
     } catch (e) {
       // Handle errors if any
+      displayMessage('Error fetching user data: $e', context);
       print('Error fetching user data: $e');
     }
   }
@@ -102,6 +103,7 @@ class FirebaseAuthprovideServiceService {
   Future<void> signIn(
       BuildContext context, String email, String password) async {
     try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
       await route(context);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -112,6 +114,26 @@ class FirebaseAuthprovideServiceService {
         displayMessage('Wrong login credentials, please try again', context);
       }
     }
+  }
+
+  // Future<User?> signInWithEmailAndPassword(
+  //     String email, String password) async {
+  //   try {
+  //     final UserCredential userCredential = await _auth
+  //         .signInWithEmailAndPassword(email: email, password: password);
+  //     await saveUserData(userCredential.user!);
+  //     return userCredential.user;
+  //   } on FirebaseAuthException catch (e) {
+  //     // Handle errors appropriately
+  //     rethrow;
+  //   }
+  // }
+
+  Future<void> saveUserData(User user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userId', user.uid);
+    await prefs.setString('userEmail', user.email!);
+    await prefs.setString('username', user.displayName ?? '');
   }
 
 //logout

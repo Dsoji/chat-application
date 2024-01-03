@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyC_DGntsB1oXBUYbP5-QLbsxe2wv4-OxhU',
-    appId: '1:973084844515:android:e104c2501c1a43213cc0d6',
+    appId: '1:973084844515:android:c5c08d3019cd2f343cc0d6',
     messagingSenderId: '973084844515',
     projectId: 'snow-chat-f33a4',
     storageBucket: 'snow-chat-f33a4.appspot.com',
@@ -63,10 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '973084844515',
     projectId: 'snow-chat-f33a4',
     storageBucket: 'snow-chat-f33a4.appspot.com',
-    androidClientId:
-        '973084844515-gvpai5ujuket1np73m6ano5re72q1mno.apps.googleusercontent.com',
-    iosClientId:
-        '973084844515-2lktlg2225r4oqn767dr02r6rn21ojcm.apps.googleusercontent.com',
+    androidClientId: '973084844515-gvpai5ujuket1np73m6ano5re72q1mno.apps.googleusercontent.com',
+    iosClientId: '973084844515-2lktlg2225r4oqn767dr02r6rn21ojcm.apps.googleusercontent.com',
     iosBundleId: 'com.example.iceChat',
   );
 }

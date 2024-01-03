@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/feature/auth_screen/auth_nav.dart';
 
 // final userProvider = Provider<UserService>((ref) => UserService());
@@ -27,12 +29,25 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF410F57),
+      backgroundColor: mOnboardingColor1,
       body: Center(
-        child: SizedBox(
-          height: 87,
-          width: 83,
-          child: Image.asset(''),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 200,
+              height: 200,
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.blueGrey.shade50),
+              child: Image.asset('assets/amico.png'),
+            ),
+            const Gap(24),
+            const Text(
+              "Ice Chat",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );

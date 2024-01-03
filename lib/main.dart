@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ice_chat/feature/splashscreen.dart';
 import 'package:ice_chat/firebase_options.dart';
-import 'package:ice_chat/core/constants/colors.dart';
 import 'package:ice_chat/services/firebaseNoti_service.dart';
 
 void main() async {
@@ -31,15 +30,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'ice chat',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: mOnboardingColor1),
-        appBarTheme: const AppBarTheme(
-            color: Colors.white,
-            // titleTextStyle: TextStyles.onboard,
-            centerTitle: true,
-            iconTheme: IconThemeData(color: Colors.black)),
-        useMaterial3: true,
-      ),
+      darkTheme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: Colors.black,
+          appBarTheme:
+              const AppBarTheme(color: Color.fromARGB(255, 17, 16, 16))),
+      themeMode: ThemeMode.dark,
       home: const SplashScreen(),
     );
   }

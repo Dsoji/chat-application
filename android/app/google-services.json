@@ -31,10 +31,46 @@
               "client_type": 3
             },
             {
-              "client_id": "973084844515-bbrubli616si0tqpicqro28uro9sq7iq.apps.googleusercontent.com",
+              "client_id": "973084844515-2lktlg2225r4oqn767dr02r6rn21ojcm.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.snowChat"
+                "bundle_id": "com.example.iceChat"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973084844515:android:c5c08d3019cd2f343cc0d6",
+        "android_client_info": {
+          "package_name": "com.snow.icechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973084844515-ulsc7ev98a9sd9tc23n71o9iqgvpekpi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_DGntsB1oXBUYbP5-QLbsxe2wv4-OxhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973084844515-ulsc7ev98a9sd9tc23n71o9iqgvpekpi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "973084844515-2lktlg2225r4oqn767dr02r6rn21ojcm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.iceChat"
               }
             }
           ]

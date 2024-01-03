@@ -34,11 +34,8 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: grey30,
       appBar: AppBar(
-        // automaticallyImplyLeading: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        elevation: 2,
         centerTitle: true,
         title: Text(
           'Welcome, here are your chats',
@@ -54,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const Divider(),
+            const Gap(24),
             SizedBox(
               height: 56,
               width: double.infinity,
@@ -132,7 +129,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             return userSnapshot.data!;
                           } else {
                             return Center(
-                              child: LoadingAnimationWidget.staggeredDotsWave(
+                              child: LoadingAnimationWidget.bouncingBall(
                                 color: mOnboardingColor1,
                                 size: 25,
                               ),

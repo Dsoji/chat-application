@@ -141,7 +141,7 @@ class _FeedsPageState extends State<FeedsPage> {
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
-            color: Colors.white,
+            // color: Colors.grey,
             borderRadius: BorderRadius.circular(20.0),
             border: Border.all(
               color: mOnboardingColor1,
@@ -155,15 +155,13 @@ class _FeedsPageState extends State<FeedsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const CircleAvatar(
-                  radius: 15,
-                  backgroundColor: Colors.blue,
-                  // backgroundImage: AssetImage(profileImage),
-                ),
                 const Gap(4),
                 Text(
                   "'${data['senderUsername']} '",
-                  style: TextStyle(fontSize: 15, color: mOnboardingColor1),
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: mOnboardingColor1,
+                      fontWeight: FontWeight.bold),
                 ),
                 const Gap(4),
                 Container(
@@ -268,17 +266,8 @@ class _FeedsPageState extends State<FeedsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: grey30,
       appBar: AppBar(
-        elevation: 1,
-        leading: const Row(
-          children: [
-            Gap(16),
-            CircleAvatar(
-              backgroundColor: Colors.blue,
-            ),
-          ],
-        ),
+        elevation: 2,
         centerTitle: true,
         title: Text(
           'Feeds',
