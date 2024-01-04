@@ -26,6 +26,12 @@ class ChatService extends ChangeNotifier {
       final pickedFile = await _imagePicker.pickImage(
         source: ImageSource.gallery,
       );
+
+      // Notify listeners if image is picked successfully
+      if (pickedFile != null) {
+        notifyListeners();
+      }
+
       return pickedFile;
     } catch (e) {
       _logger.e('Error picking image: $e');
@@ -75,6 +81,8 @@ class ChatService extends ChangeNotifier {
         .doc(chatRoomId)
         .collection('messages')
         .add(newMsg.toMap());
+
+    notifyListeners();
   }
 
   // Get messages

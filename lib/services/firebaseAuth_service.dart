@@ -40,6 +40,9 @@ class FirebaseAuthprovideServiceService {
     String name,
   ) async {
     try {
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+
       await postDetailsToFirestore(context, email, name);
 
       Navigator.pushReplacement(
@@ -59,11 +62,14 @@ class FirebaseAuthprovideServiceService {
     String email,
     String name,
   ) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     var user = _auth.currentUser;
     CollectionReference ref = FirebaseFirestore.instance.collection('users');
-    await ref
-        .doc(user!.uid)
-        .set({'email': email, 'name': name, 'userId': user.uid});
+    await ref.doc(user!.uid).set({
+      'email': email,
+      'name': name,
+      'userId': user.uid,
+    });
   }
 
 //login
